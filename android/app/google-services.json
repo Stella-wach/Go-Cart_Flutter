@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583301066696",
+    "project_id": "globe-app-8da95",
+    "storage_bucket": "globe-app-8da95.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583301066696:android:6befc645b87f50b1291afd",
+        "android_client_info": {
+          "package_name": "com.example.globe_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqtw1QTWcMqhlEQALlslw0pkgSJqvADyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

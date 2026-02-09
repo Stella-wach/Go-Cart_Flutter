@@ -1,4 +1,4 @@
-name: gocart
+name: globe_app
 description: A beautiful Glovo-like e-commerce Flutter application
 publish_to: 'none'
 version: 1.0.0+1
@@ -10,11 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # Firebase
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  cloud_firestore: ^4.13.6
-  firebase_storage: ^11.5.6
+  # Firebase - Updated to compatible versions
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.4
   
   # State Management
   provider: ^6.1.1
@@ -50,6 +50,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
-  assets:
-    - assets/images/
-    - assets/icons/
+  # Uncomment and create these directories when you want to add custom assets
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
