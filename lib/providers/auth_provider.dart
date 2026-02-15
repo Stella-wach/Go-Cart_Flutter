@@ -40,6 +40,14 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Method to manually reload user data (useful after role changes)
+  Future<void> reloadUserData() async {
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser != null) {
+      await _loadUserData(firebaseUser.uid);
+    }
+  }
+
   Future<String?> signUp({
     required String email,
     required String password,

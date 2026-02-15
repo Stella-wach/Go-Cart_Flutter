@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
 import '../../providers/product_provider.dart';
 import '../../models/product_model.dart';
 import '../../services/cloudinary_service.dart';
@@ -27,6 +29,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   
   List<String> _imageUrls = [];
   final List<File> _newImages = [];
+  final List<Uint8List> _webImages = []; // For web platform
   bool _isLoading = false;
 
   @override
@@ -55,9 +58,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Future<void> _pickImages() async {
     final images = await _imagePicker.pickMultiImage();
     if (images.isNotEmpty) {
-      setState(() {
-        _newImages.addAll(images.map((xFile) => File(xFile.path)));
-      });
+      if (kIsWeb) {
+        // For web: read bytes
+        for (var xFile in images) {
+          final bytes = await xFile.readAsBytes();
+          setState(() {
+            _webImages.add(bytes);
+          });
+        }
+      } else {
+        // For mobile: use File
+        setState(() {
+          _newImages.addAll(images.map((xFile) => File(xFile.path)));
+        });
+      }
     }
   }
 
@@ -72,7 +86,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final productProvider = Provider.of<ProductProvider>(context, listen: false);
 
       // Upload new images to Cloudinary
-      if (_newImages.isNotEmpty) {
+      if (kIsWeb && _webImages.isNotEmpty) {
+        // For web: upload bytes
+        final uploadedUrls = await _cloudinaryService.uploadMultipleImageBytes(
+          _webImages,
+          folder: 'globe_app/products',
+        );
+        _imageUrls.addAll(uploadedUrls);
+      } else if (_newImages.isNotEmpty) {
+        // For mobile: upload files
         final uploadedUrls = await _cloudinaryService.uploadMultipleImages(
           _newImages,
           folder: 'globe_app/products',
@@ -191,45 +213,86 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                   )),
                   // New images
-                  ..._newImages.map((file) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            file,
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
+                  if (kIsWeb)
+                    ..._webImages.asMap().entries.map((entry) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.memory(
+                              entry.value,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _newImages.remove(file);
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 16,
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _webImages.removeAt(entry.key);
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )),
+                        ],
+                      ),
+                    ))
+                  else
+                    ..._newImages.map((file) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              file,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _newImages.remove(file);
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
                   // Add image button
                   InkWell(
                     onTap: _pickImages,

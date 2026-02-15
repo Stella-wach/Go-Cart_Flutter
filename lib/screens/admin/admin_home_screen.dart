@@ -6,6 +6,7 @@ import '../../providers/theme_provider.dart';
 import '../auth/login_screen.dart';
 import 'manage_products_screen.dart';
 import 'manage_orders_screen.dart';
+import 'manage_customers_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -180,7 +181,11 @@ class AdminHomeScreen extends StatelessWidget {
                   title: const Text('View Customers'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    // Navigate to customers
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ManageCustomersScreen(),
+                      ),
+                    );
                   },
                 ),
               ],

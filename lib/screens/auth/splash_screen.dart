@@ -27,6 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
     if (authProvider.isAuthenticated) {
+      // Reload user data to ensure we have the latest role
+      await authProvider.reloadUserData();
+      
+      if (!mounted) return;
+      
+      // Check admin status after reload
       if (authProvider.isAdmin) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const AdminHomeScreen()),
@@ -58,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'globe_app',
+              'Globe App',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,

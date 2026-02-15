@@ -2,9 +2,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MpesaService {
-  // Replace with your Node.js backend URL
-  static const String baseUrl = 'YOUR_BACKEND_URL';
-  
+  // Your Node.js backend URL (Cloudflare Tunnel)
+  // IMPORTANT: NO /mpesa/callback here! Just the base domain!
+static const String baseUrl = 'https://keep-immigrants-labour-literature.trycloudflare.com';  
   Future<Map<String, dynamic>?> initiateSTKPush({
     required String phoneNumber,
     required double amount,
