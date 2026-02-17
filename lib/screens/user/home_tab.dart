@@ -7,7 +7,7 @@ import '../../widgets/category_chip.dart';
 import '../shared/help_center_screen.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -37,7 +37,7 @@ class _HomeTabState extends State<HomeTab> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('globe_app'),
+        title: const Text('Globe App'),
         actions: [
           IconButton(
             icon: Icon(
@@ -116,7 +116,7 @@ class _HomeTabState extends State<HomeTab> {
                               isSelected: productProvider.selectedCategory == category,
                               onTap: () => productProvider.filterByCategory(category),
                             );
-                          }),
+                          }).toList(),
                         ],
                       ),
                     ),
@@ -141,7 +141,7 @@ class _HomeTabState extends State<HomeTab> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.shopping_bag_outlined,
                         size: 64,
                         color: Colors.grey,
@@ -163,7 +163,7 @@ class _HomeTabState extends State<HomeTab> {
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.75,
+                    childAspectRatio: 0.68,  // Made smaller - was 0.75
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
