@@ -2,9 +2,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MpesaService {
-  // Your Node.js backend URL (Cloudflare Tunnel)
-  // IMPORTANT: NO /mpesa/callback here! Just the base domain!
-static const String baseUrl = 'https://54e7-105-163-157-153.ngrok-free.app';  
+  
+  
+static const String baseUrl = 'https://80c1-41-139-172-215.ngrok-free.app';  
   Future<Map<String, dynamic>?> initiateSTKPush({
     required String phoneNumber,
     required double amount,
@@ -17,10 +17,10 @@ static const String baseUrl = 'https://54e7-105-163-157-153.ngrok-free.app';
         body: json.encode({
           'phoneNumber': phoneNumber,
           'amount': amount,
-          'orderId': orderId,
+          'orderId': orderId, 
         }),
       );
-
+                                                                  
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
