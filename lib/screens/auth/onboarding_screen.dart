@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -18,19 +18,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: "Welcome to Globe App",
       description: "Discover amazing products from around the world, all in one place",
       emoji: "🌍",
-      color: Color(0xFF8B5CF6),
+      color: const Color(0xFF8B5CF6),
     ),
     OnboardingPage(
       title: "Shop with Confidence",
       description: "Secure payments with M-Pesa integration and real-time order tracking",
       emoji: "🛍️",
-      color: Color(0xFF9C27B0),
+      color: const Color(0xFF9C27B0),
     ),
     OnboardingPage(
       title: "Fast & Easy Checkout",
       description: "Quick checkout process with multiple payment options for your convenience",
       emoji: "⚡",
-      color: Color(0xFF7B1FA2),
+      color: const Color(0xFF7B1FA2),
     ),
   ];
 
@@ -106,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     height: 8,
                     decoration: BoxDecoration(
                       color: _currentPage == index
-                          ? Color(0xFF8B5CF6)
+                          ? const Color(0xFF8B5CF6)
                           : Colors.grey.shade700,
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -133,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8B5CF6),
+                    backgroundColor: const Color(0xFF8B5CF6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),

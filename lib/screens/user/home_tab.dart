@@ -7,7 +7,7 @@ import '../../widgets/category_chip.dart';
 import '../shared/help_center_screen.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key? key}) : super(key: key);
+  const HomeTab({super.key});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -116,7 +116,7 @@ class _HomeTabState extends State<HomeTab> {
                               isSelected: productProvider.selectedCategory == category,
                               onTap: () => productProvider.filterByCategory(category),
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),
@@ -141,7 +141,7 @@ class _HomeTabState extends State<HomeTab> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.shopping_bag_outlined,
                         size: 64,
                         color: Colors.grey,

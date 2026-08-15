@@ -4,7 +4,7 @@ import 'dart:convert';
 class MpesaService {
   
   
-static const String baseUrl = 'https://80c1-41-139-172-215.ngrok-free.app';  
+static const String baseUrl = 'https://48f9-41-139-172-215.ngrok-free.app';  
   Future<Map<String, dynamic>?> initiateSTKPush({
     required String phoneNumber,
     required double amount,

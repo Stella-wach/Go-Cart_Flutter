@@ -40,12 +40,10 @@ class AppTheme {
       secondary: lightPurple,
       tertiary: accentPink,
       surface: darkSurface,
-      background: darkBackground,
       error: Colors.redAccent,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: darkText,
-      onBackground: darkText,
     ),
     
     // Scaffold
@@ -256,12 +254,10 @@ class AppTheme {
       secondary: lightPurple,
       tertiary: accentPink,
       surface: lightSurface,
-      background: lightBackground,
       error: Colors.red,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: lightText,
-      onBackground: lightText,
     ),
     
     scaffoldBackgroundColor: lightBackground,
