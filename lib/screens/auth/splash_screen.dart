@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/theme.dart';
 import 'onboarding_screen.dart';
-import 'login_screen.dart';
 import '../user/user_home_screen.dart';
 import '../admin/admin_home_screen.dart';
 
@@ -84,8 +83,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         );
       }
     } else {
+      // No account needed to browse - go straight into the app.
+      // Login/Sign up remain available (e.g. from Profile or Checkout).
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const UserHomeScreen()),
       );
     }
   }
