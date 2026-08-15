@@ -50,11 +50,16 @@ class _LoginScreenState extends State<LoginScreen> {
       await authProvider.reloadUserData();
       
       if (!mounted) return;
-      
+
       if (authProvider.isAdmin) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const AdminHomeScreen()),
+          (route) => false,
         );
+      } else if (Navigator.of(context).canPop()) {
+        // Login was opened as an optional detour (e.g. from Profile or
+        // Checkout) - return to where the person came from.
+        Navigator.of(context).pop(true);
       } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const UserHomeScreen()),
@@ -149,6 +154,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
+      appBar: Navigator.of(context).canPop()
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            )
+          : null,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

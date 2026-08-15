@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../auth/login_screen.dart';
+import '../auth/signup_screen.dart';
 
 class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
@@ -12,6 +13,7 @@ class ProfileTab extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final user = authProvider.currentUser;
+    final isGuest = user == null;
 
     return Scaffold(
       appBar: AppBar(
@@ -24,52 +26,113 @@ class ProfileTab extends StatelessWidget {
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Text(
-                      user?.name[0].toUpperCase() ?? 'U',
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: isGuest
+                  ? Row(
                       children: [
-                        Text(
-                          user?.name ?? 'User',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          child: const Icon(
+                            Icons.person_outline,
+                            size: 36,
+                            color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          user?.email ?? '',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "You're browsing as a guest",
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Log in to track orders and save your details',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => const LoginScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Log In'),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => const SignUpScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Sign Up'),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        if (user?.phoneNumber != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            user!.phoneNumber!,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey,
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          child: Text(
+                            user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.name,
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                user.email,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              if (user.phoneNumber != null) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  user.phoneNumber!,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -159,45 +222,44 @@ class ProfileTab extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.red),
+          if (!isGuest) ...[
+            const SizedBox(height: 24),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Logout'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await authProvider.signOut();
+                            if (context.mounted) {
+                              // Signing out just returns to guest browsing -
+                              // no account is required to use the app.
+                              Navigator.of(context).popUntil((route) => route.isFirst);
+                            }
+                          },
+                          child: const Text('Logout'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Logout'),
-                    content: const Text('Are you sure you want to logout?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          await authProvider.signOut();
-                          if (context.mounted) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (_) => const LoginScreen(),
-                              ),
-                              (route) => false,
-                            );
-                          }
-                        },
-                        child: const Text('Logout'),
-                      ),
-                    ],
-                  ),
-                );
-              },
             ),
-          ),
+          ],
         ],
       ),
     );

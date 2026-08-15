@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_screen.dart';
+import '../user/user_home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -45,8 +45,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await prefs.setBool('hasSeenOnboarding', true);
     
     if (mounted) {
+      // Straight into the app - no account required to browse.
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const UserHomeScreen()),
       );
     }
   }

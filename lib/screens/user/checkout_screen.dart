@@ -5,6 +5,7 @@ import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/mpesa_service.dart';
 import '../../models/cart_model.dart' as cart;
+import '../auth/login_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -38,12 +39,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<void> _placeOrder() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // Login is optional everywhere else, but placing an order needs an
+    // account to attach it to, so we ask for it only at this last step.
+    if (!authProvider.isAuthenticated) {
+      final loggedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+
+      if (loggedIn != true || !authProvider.isAuthenticated) return;
+      if (!mounted) return;
+    }
+
     setState(() {
       _isProcessing = true;
     });
-
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     try {
       // Create order
@@ -126,6 +138,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -136,6 +149,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (!authProvider.isAuthenticated)
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        "You'll be asked to log in when you place your order.",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             Text(
               'Delivery Information',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
