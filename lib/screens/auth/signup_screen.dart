@@ -58,9 +58,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const UserHomeScreen()),
-      );
+
+      // Sign up was opened from Login, which itself may have been an
+      // optional detour (e.g. from Profile or Checkout). Pop both so we
+      // land back where the person started, falling back to Home.
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(true);
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(true);
+        }
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const UserHomeScreen()),
+        );
+      }
     }
   }
 
